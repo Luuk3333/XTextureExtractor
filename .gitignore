@@ -11,3 +11,4 @@ local.properties
 # Build files and directories
 *.apk
 build
+/Plugin-XTextureExtractor-*
