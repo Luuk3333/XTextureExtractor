@@ -149,6 +149,9 @@ XPLMCommandRef cmd_clear_button = NULL;
 XPLMCommandRef cmd_hide_button = NULL;
 XPLMCommandRef cmd_dump_button = NULL;
 
+int g_menu_container_idx; // The index of our menu item in the Plugins menu
+XPLMMenuID g_menu_id; // The menu container we'll append all our menu items to
+
 char _g_window_name[COCKPIT_MAX_WINDOWS][256];  // titles of each window
 int _g_texture_lbrt[COCKPIT_MAX_WINDOWS][4]; // left, bottom, right, top
 
@@ -199,13 +202,34 @@ PLUGIN_API int XPluginStart(
 #endif
 
 	// Implement commands for all the buttons we support
-	XPLMRegisterCommandHandler(cmd_texture_button = XPLMCreateCommand("XTE/newscan", "XTextureExtractor New Scan"), handle_command, 1, "New Scan");
-	XPLMRegisterCommandHandler(cmd_scan_button  = XPLMCreateCommand("XTE/scan", "XTextureExtractor Scan"),  handle_command, 1, "Scan");
-	XPLMRegisterCommandHandler(cmd_load_button  = XPLMCreateCommand("XTE/load", "XTextureExtractor Load"),  handle_command, 1, "Load");
-	XPLMRegisterCommandHandler(cmd_save_button  = XPLMCreateCommand("XTE/save", "XTextureExtractor Save"),  handle_command, 1, "Save");
-	XPLMRegisterCommandHandler(cmd_clear_button = XPLMCreateCommand("XTE/clear", "XTextureExtractor Clear"), handle_command, 1, "Clear");
-	XPLMRegisterCommandHandler(cmd_hide_button  = XPLMCreateCommand("XTE/hide", "XTextureExtractor Hide"),  handle_command, 1, "Hide");
-	XPLMRegisterCommandHandler(cmd_dump_button  = XPLMCreateCommand("XTE/dump", "XTextureExtractor Dump"),  handle_command, 1, "Dump");
+	cmd_texture_button = XPLMCreateCommand("XTE/newscan", "XTextureExtractor New Scan");
+	cmd_scan_button = XPLMCreateCommand("XTE/scan", "XTextureExtractor Scan");
+	cmd_load_button = XPLMCreateCommand("XTE/load", "XTextureExtractor Load");
+	cmd_save_button = XPLMCreateCommand("XTE/save", "XTextureExtractor Save");
+	cmd_clear_button = XPLMCreateCommand("XTE/clear", "XTextureExtractor Clear");
+	cmd_hide_button = XPLMCreateCommand("XTE/hide", "XTextureExtractor Hide");
+	cmd_dump_button = XPLMCreateCommand("XTE/dump", "XTextureExtractor Dump");
+
+	XPLMRegisterCommandHandler(cmd_texture_button, handle_command, 1, "New Scan");
+	XPLMRegisterCommandHandler(cmd_scan_button, handle_command, 1, "Scan");
+	XPLMRegisterCommandHandler(cmd_load_button, handle_command, 1, "Load");
+	XPLMRegisterCommandHandler(cmd_save_button, handle_command, 1, "Save");
+	XPLMRegisterCommandHandler(cmd_clear_button, handle_command, 1, "Clear");
+	XPLMRegisterCommandHandler(cmd_hide_button, handle_command, 1, "Hide");
+	XPLMRegisterCommandHandler(cmd_dump_button, handle_command, 1, "Dump");
+
+	// Add menu
+	g_menu_container_idx = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "XTextureExtractor", 0, 0);
+	g_menu_id = XPLMCreateMenu("XTextureExtractor", XPLMFindPluginsMenu(), g_menu_container_idx, NULL, NULL);
+
+	// Add menu items
+	XPLMAppendMenuItemWithCommand(g_menu_id, "New Scan", cmd_texture_button);
+	XPLMAppendMenuItemWithCommand(g_menu_id, "Scan", cmd_scan_button);
+	XPLMAppendMenuItemWithCommand(g_menu_id, "Load", cmd_load_button);
+	XPLMAppendMenuItemWithCommand(g_menu_id, "Save", cmd_save_button);
+	XPLMAppendMenuItemWithCommand(g_menu_id, "Clear", cmd_clear_button);
+	XPLMAppendMenuItemWithCommand(g_menu_id, "Hide", cmd_hide_button);
+	XPLMAppendMenuItemWithCommand(g_menu_id, "Dump", cmd_dump_button);
 
 	return 1;
 }

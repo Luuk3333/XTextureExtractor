@@ -28,6 +28,7 @@
 #include "XPLMPlanes.h"
 #include "XPLMDataAccess.h"
 #include "XPLMPlugin.h"
+#include "XPLMMenus.h"
 #include <string.h>
 #include <stdio.h>
 #if IBM
